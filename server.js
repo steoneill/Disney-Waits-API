@@ -27,7 +27,7 @@ app.use(function (req, res, next) {
 app.get('/:parkId', (req, res) => {
 
   switch (req.params.parkId) {
-    case 'waltDisneyWorldMagicKingdom':
+    case 'WaltDisneyWorldMagicKingdom':
       var park = new Themeparks.Parks.WaltDisneyWorldMagicKingdom();
       break;
     case 'WaltDisneyWorldEpcot':
@@ -69,12 +69,8 @@ app.get('/:parkId', (req, res) => {
   var parkInfo = {
     parkName: park.Name.split(' -')[0],
     parkLocation: park.Name.split(' - ')[1],
-    parkTimes: {
-
-    },
-    rideInfo: {
-
-    }
+    parkTimes: [],
+    rideInfo: []
   };
   // get park opening times
   park.GetOpeningTimes().then(function (times) {
@@ -92,14 +88,14 @@ app.get('/:parkId', (req, res) => {
   park.GetWaitTimes().then(function (rides) {
     // print each wait time
     for (var i = 0, ride; ride = rides[i++];) {
-      parkInfo.rideInfo[ride.id] = {
+      parkInfo.rideInfo[i] = [
         name: ride.name,
-        waitTime: ride.waitTime,
-        fastPass: ride.fastPass,
-        status: ride.status,
-        open: ride.active,
-        openingTimes: ride.schedule
-      }
+          waitTime: ride.waitTime,
+          fastPass: ride.fastPass,
+          status: ride.status,
+          open: ride.active,
+          openingTimes: ride.schedule
+      ]
     }
   }, console.error).then(() => {
     res.json(parkInfo);
